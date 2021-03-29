@@ -1,0 +1,112 @@
+:root {
+    --sky: linear-gradient(0deg, #FFFFFF 0%, #000000 100%);
+    --neon: linear-gradient(45deg, #FFFFFF 0%, #000000 100%);
+    --neon-size: 1000%;
+}
+
+@keyframes neon-shift {
+    from {
+        background-position: left;
+    }
+
+    to {
+        background-position: right;
+    }
+}
+
+@media only screen and (min-width: 1px) {
+    * {
+        margin: 0;
+        padding: 0;
+        font-size: 1em;
+        font-family: Arial, sans-serif;
+        font-weight: unset;
+        list-style: none;
+        box-sizing: border-box;
+        color: #000000;
+        text-decoration: none;
+    }
+
+    html, body, canvas {
+        width: 100vw;
+        height: 100vh;
+    }
+
+    body {
+        background: var(--sky);
+    }
+
+    body > div {
+        position: absolute;
+        top: 0;
+        width: 40vw;
+        height: 20vw;
+        margin: 2% 0 0 4%;
+        background: linear-gradient(0deg, #000000 0%, #080808 100%);
+        padding: 1%;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: center;
+        border: 10px solid #0f0f0f;
+        border-radius: 10px;
+    }
+
+    nav {
+        margin-top: 2%;
+    }
+
+    li, p {
+        display: inline;
+    }
+
+    h1 {
+        font-size: 5em;
+        font-weight: 550;
+        width: 100%;
+    }
+
+    h2 {
+        font-size: 2em;
+        font-weight: 550;
+        width: 100%;
+    }
+
+    li {
+        font-size: 1.5em;
+    }
+
+    p {
+        transition: 0.5s;
+        font-size: 0;
+    }
+
+    a:hover > p {
+        font-size: 1em;
+    }
+
+    li, a, i, p {
+        color: transparent;
+    }
+
+    h1:nth-child(even), h2:nth-child(even) {
+        transform: translateY(-100%);
+    }
+
+    i:nth-child(even), p:nth-child(even) {
+        transform: translateX(-100%);
+    }
+
+    h1:nth-child(even), h2:nth-child(even), i:nth-child(even), p:nth-child(even)  {
+        filter: blur(20px);
+        position: absolute;
+    }
+
+    h1, h2, ul, h1:nth-child(even), h2:nth-child(even), i:nth-child(even), p:nth-child(even) {
+        background: var(--neon);
+        background-size: var(--neon-size);
+        color: transparent;
+        background-clip: text;
+        -webkit-background-clip: text;
+        animation: 60s neon-shift alternate infinite;
+    }
+}
