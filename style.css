@@ -27,6 +27,14 @@
         text-decoration: none;
     }
 
+    *::selection {
+        background: auto;
+    }
+
+    *:hover {
+        cursor: default;
+    }
+
     html, body, canvas {
         width: 100vw;
         height: 100vh;
@@ -73,6 +81,10 @@
 
     li {
         font-size: 1.5em;
+    }
+
+    li:hover * {
+        cursor: pointer;
     }
 
     p {
