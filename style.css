@@ -45,6 +45,8 @@
     }
 
     body > div {
+        /*opacity: 0.1; /*temporary*/
+
         position: absolute;
         top: 0;
         width: 40vw;
