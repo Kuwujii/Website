@@ -17,9 +17,10 @@ window.addEventListener("load", () => {
         "linear-gradient(45deg, #FF9BCD 0%, #FF53BE 25%, #8A00FF 50%, #665EFF 75%, #8CA6FF 100%)",
         "linear-gradient(45deg, #FF4D00 0%, #FF8D00 100%)",
         "linear-gradient(45deg, #FFFFFF 0%, #FF143C 100%)",
-        "linear-gradient(45deg, #8706FF 0%, #FFB5E0 33.3%, #FFFFFF 66.6%, #76FFA4 100%)"
+        "linear-gradient(45deg, #8706FF 0%, #FFB5E0 33.33%, #FFFFFF 66.67%, #76FFA4 100%)",
+        "linear-gradient(45deg, #FF0000 0%, #FFFF00 16.67%, #00FF00 33.33%, #00FFFF 50%, #0000FF 66.67%, #FF00FF 83.33%, #FF0000 100%)"
     ];
-    var neonSizes = ["2500%", "2500%", "1000%", "1000%", "2000%"];
+    var neonSizes = ["2500%", "2500%", "1000%", "1000%", "2000%", "3500%"];
 
     var choice = Math.floor(Math.random()*neonGradients.length);
     document.documentElement.style.setProperty("--neon", neonGradients[choice]);
@@ -36,18 +37,22 @@ window.addEventListener("load", () => {
         var ctx = canvas.getContext('2d');
 
         var baseMtColours = ["#F2F2F2", "#474B56", "#35373E"];
+        var plannedLayers = 5;
         
-        for(var layer = 0; layer < 5; layer++) {
+        for(var layer = 0; layer < plannedLayers; layer++) {
             var start = -Math.floor(Math.random()*(canvas.width/4)+1);
             var end = canvas.width+Math.floor(Math.random()*(canvas.width/4)+1);
             var cursor = start;
             var layerFix = 1+(0.25*layer);
-            console.log(layerFix);
 
             var mtColours = [];
 
-            for(var i = 0; i < baseMtColours.length; i++) {
-                mtColours.push(ShadeColour(baseMtColours[i], "#0000FF", layer+1));
+            if(layer == 0) {
+                mtColours = baseMtColours;
+            } else {
+                for(var i = 0; i < baseMtColours.length; i++) {
+                    mtColours.push(ShadeColour(baseMtColours[i], "#000000", plannedLayers-layer));
+                }
             }
 
             while(cursor <= end) {
