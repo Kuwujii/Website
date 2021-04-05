@@ -26,8 +26,10 @@ window.addEventListener("load", () => {
     document.documentElement.style.setProperty("--neon", neonGradients[choice]);
     document.documentElement.style.setProperty("--neon-size", neonSizes[choice]);
 
-    document.documentElement.style.setProperty("--sky", "linear-gradient(0deg, #4EA4D9 0%, #1763A6 100%)");     //day
-    //document.documentElement.style.setProperty("--sky", "linear-gradient(0deg, #032340 0%, #011526 100%)");   //night
+    var sky = ["#4EA4D9", "#1763A6"] //day
+    //var sky = ["#032340", "#011526"] //night
+
+    document.documentElement.style.setProperty("--sky", "linear-gradient(0deg, "+sky[0]+" 0%, "+sky[1]+" 100%)");
 
     var canvas = document.getElementById("canvas");
     canvas.width = document.body.clientWidth;
@@ -36,32 +38,26 @@ window.addEventListener("load", () => {
     if (canvas.getContext) {
         var ctx = canvas.getContext('2d');
 
-        var baseMtColours = ["#F2F2F2", "#474B56", "#35373E"];
+        var grassColours = ["#267302", "#155902"];
+        var fenceColour = "#50290A";
+        var baseMtColours = ["#F2F2F2", "#474B56", "#35373E", ShadeColour(grassColours[1], "#000000", 2)];
         var plannedLayers = 5;
         
         for(var layer = 0; layer < plannedLayers; layer++) {
-            var start = -Math.floor(Math.random()*(canvas.width/4)+1);
-            var end = canvas.width+Math.floor(Math.random()*(canvas.width/4)+1);
+            var start = -Math.floor(Math.random()*((canvas.width/3)-1)+1);
+            var end = canvas.width+Math.floor(Math.random()*((canvas.width/3)-1)+1);
             var cursor = start;
-            var layerFix = 1+(0.25*layer);
+            var layerFix = Math.round(canvas.width*((plannedLayers-layer)/50))
 
             var mtColours = [];
 
-            if(layer == 0) {
-                mtColours = baseMtColours;
-            } else {
-                for(var i = 0; i < baseMtColours.length; i++) {
-                    mtColours.push(ShadeColour(baseMtColours[i], "#000000", plannedLayers-layer));
-                }
+            for(var i = 0; i < baseMtColours.length; i++) {
+                mtColours.push(ShadeColour(baseMtColours[i], sky[1], layer+1));
             }
 
             while(cursor <= end) {
-                var mtWidth = Math.floor(Math.random()*(canvas.width/4)+1)+(canvas.width/5);
-                var mtHeight = Math.floor(Math.random()*((mtWidth/2)*layerFix)+1)+((canvas.height/3)/layerFix);
-
-                if(cursor+mtWidth > end) {
-                    mtWidth = end-cursor;
-                }
+                var mtWidth = Math.floor(Math.random()*((canvas.width/3)-(canvas.width/4))+(canvas.width/4));
+                var mtHeight = (Math.round(mtWidth/Math.sqrt(3))*2)-layerFix;
                 
                 mtWidth = Math.round(mtWidth/2);
                 if(mtWidth == 0) {
@@ -72,32 +68,81 @@ window.addEventListener("load", () => {
 
                 ctx.beginPath();
                 ctx.moveTo(cursor, canvas.height);
-                ctx.lineTo(cursor+mtWidth, mtHeight);
+                ctx.lineTo(cursor, canvas.height-layerFix);
+                ctx.lineTo(cursor+mtWidth, mtHeight-layerFix);
+                ctx.lineTo(cursor+(mtWidth*2), canvas.height-layerFix);
                 ctx.lineTo(cursor+(mtWidth*2), canvas.height);
 
                 var gradientLight = ctx.createLinearGradient(cursor+mtWidth, mtHeight, cursor+mtWidth-mtMiddle, canvas.height);
                 gradientLight.addColorStop(0, mtColours[0]);
-                gradientLight.addColorStop(0.5, mtColours[1]);
-                gradientLight.addColorStop(1, mtColours[2]);
+                gradientLight.addColorStop(0.25, mtColours[1]);
+                gradientLight.addColorStop(0.5, mtColours[2]);
+                gradientLight.addColorStop(1, mtColours[3]);
 
                 ctx.fillStyle = gradientLight;
                 ctx.fill();
 
                 ctx.beginPath();
                 ctx.moveTo(cursor+mtWidth+mtMiddle, canvas.height);
-                ctx.lineTo(cursor+mtWidth, mtHeight);
+                ctx.lineTo(cursor+mtWidth+mtMiddle, canvas.height-layerFix);
+                ctx.lineTo(cursor+mtWidth, mtHeight-layerFix);
+                ctx.lineTo(cursor+(mtWidth*2), canvas.height-layerFix);
                 ctx.lineTo(cursor+(mtWidth*2), canvas.height);
 
                 var gradientDark = ctx.createLinearGradient(cursor+mtWidth, mtHeight, cursor+mtWidth-mtMiddle, canvas.height);
                 gradientDark.addColorStop(0, ShadeColour(mtColours[0], "#000000", 4));
-                gradientDark.addColorStop(0.5, ShadeColour(mtColours[1], "#000000", 4));
-                gradientDark.addColorStop(1, ShadeColour(mtColours[2], "#000000", 4));
+                gradientDark.addColorStop(0.25, ShadeColour(mtColours[1], "#000000", 4));
+                gradientDark.addColorStop(0.5, ShadeColour(mtColours[2], "#000000", 4));
+                gradientDark.addColorStop(1, ShadeColour(mtColours[3], "#000000", 4));
 
                 ctx.fillStyle = gradientDark;
                 ctx.fill();
 
                 cursor += mtWidth*2;
             }
+        }
+
+        var groundLevel = canvas.height-(canvas.height*0.1);
+        
+        var gradientGround = ctx.createLinearGradient(canvas.width, groundLevel, 0, canvas.height);
+        gradientGround.addColorStop(0, grassColours[0]);
+        gradientGround.addColorStop(1, grassColours[1]);
+
+        ctx.fillStyle = gradientGround;
+        ctx.fillRect(0, groundLevel, canvas.width, groundLevel);
+
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height);
+        ctx.lineTo(0, groundLevel+(groundLevel*0.1));
+        ctx.lineTo(canvas.width, groundLevel+(groundLevel*0.09));
+        ctx.lineTo(canvas.width, canvas.height);
+        ctx.lineTo(0, canvas.height);
+
+        var gradientGround = ctx.createLinearGradient(canvas.width, canvas.height, canvas.width/4, groundLevel+(groundLevel*0.09));
+        gradientGround.addColorStop(0, baseMtColours[1]);
+        gradientGround.addColorStop(1, baseMtColours[2]);
+
+        ctx.fillStyle = gradientGround;
+        ctx.fill();
+
+        var start = -Math.floor(Math.random()*((canvas.width/3)-1)+1);
+        var end = canvas.width+Math.floor(Math.random()*((canvas.width/3)-1)+1);
+        var cursor = start;
+
+        var fenceLevel = canvas.height-(canvas.height*0.09);
+
+        var gradientFence = ctx.createLinearGradient(canvas.width, -fenceLevel*0.125, 0, fenceLevel);
+        gradientFence.addColorStop(0, fenceColour);
+        gradientFence.addColorStop(1, MixColours(fenceColour, "#000000"));
+
+        ctx.fillStyle = gradientFence;
+        
+        while(cursor <= end) {
+            ctx.fillRect(cursor, fenceLevel, canvas.width/100, -fenceLevel*0.125);
+            ctx.fillRect(cursor+(canvas.width/200), fenceLevel-((fenceLevel*0.125)/2), canvas.width/12.5, canvas.width/200);
+            ctx.fillRect(cursor+(canvas.width/200), fenceLevel-((fenceLevel*0.125)*(3/4)), canvas.width/12.5, canvas.width/200);
+
+            cursor += canvas.width/12.5;
         }
     }
 });
@@ -113,7 +158,25 @@ function MixColours(colourHEX1, colourHEX2) {
     var g = Math.round((((colourRGB1 >> 8) & 0x00FF)+((colourRGB2 >> 8) & 0x00FF))/2);
     var b = Math.round((((colourRGB1) & 0x0000FF)+((colourRGB2) & 0x0000FF))/2);
 
-    return "#"+(b | (g << 8) | (r << 16)).toString(16).toUpperCase();
+    if(r.toString(16).length == 2) {
+        r = r.toString(16)
+    } else {
+        r = "0"+r.toString(16)
+    }
+
+    if(g.toString(16).length == 2) {
+        g = g.toString(16)
+    } else {
+        g = "0"+g.toString(16)
+    }
+    
+    if(b.toString(16).length == 2) {
+        b = b.toString(16)
+    } else {
+        b = "0"+b.toString(16)
+    }
+
+    return "#"+r+g+b.toUpperCase();
 }
 
 function ShadeColour(baseColourHEX, shadeColourHEX, mixAmount) {
