@@ -41,6 +41,18 @@ window.addEventListener("load", () => {
         var grassColours = ["#267302", "#155902"];
         var fenceColour = "#50290A";
         var baseMtColours = ["#F2F2F2", "#474B56", "#35373E", ShadeColour(grassColours[1], "#000000", 2)];
+
+        ctx.beginPath();
+        ctx.arc(canvas.width-(canvas.width*0.1), canvas.height-(canvas.height*0.9), canvas.height*0.075, 0, Math.PI*2, true);
+
+        var sunGradient = ctx.createRadialGradient(canvas.width-(canvas.width*0.1), canvas.height-(canvas.height*0.9), 1, canvas.width-(canvas.width*0.1), canvas.height-(canvas.height*0.9), 50);
+        sunGradient.addColorStop(0, "#FCD440");
+        sunGradient.addColorStop(0.75, "#FCD440");
+        sunGradient.addColorStop(1, "transparent");
+        
+        ctx.fillStyle = sunGradient;
+        ctx.fill();
+
         var plannedLayers = 5;
         
         for(var layer = 0; layer < plannedLayers; layer++) {
