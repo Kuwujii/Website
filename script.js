@@ -35,32 +35,34 @@ window.addEventListener("load", () => {
     canvas.width = document.body.clientWidth;
     canvas.height = document.body.clientHeight;
 
-    let wth, hgt
+    let wth, hgt, fix
 
     if(canvas.width > canvas.height) {
         wth = canvas.width;
         hgt = canvas.height;
+        fix = 0;
     } else {
         wth = canvas.height;
         hgt = canvas.width;
+        fix = (canvas.width*(canvas.height/canvas.width))-canvas.width;
     }
 
     if (canvas.getContext) {
         let ctx = canvas.getContext('2d');
 
-        GenMountainLandscape(ctx, wth, hgt, sky);
+        GenMountainLandscape(ctx, wth, hgt, sky, fix);
     }
 });
 
-function GenMountainLandscape(ctx, wth, hgt, sky) {
+function GenMountainLandscape(ctx, wth, hgt, sky, fix) {
     const grassColours = ["#267302", "#155902"];
     const fenceColour = "#50290A";
     const baseMtColours = ["#F2F2F2", "#474B56", "#35373E", ShadeColour(grassColours[1], "#000000", 2)];
 
     ctx.beginPath();
-    ctx.arc(wth-(wth*0.1), hgt-(hgt*0.9), hgt*0.075, 0, Math.PI*2, true);
+    ctx.arc(canvas.width-(canvas.width*0.1), hgt-(hgt*0.9), hgt*0.075, 0, Math.PI*2, true);
 
-    let sunGradient = ctx.createRadialGradient(wth-(wth*0.1), hgt-(hgt*0.9), 1, wth-(wth*0.1), hgt-(hgt*0.9), 50);
+    let sunGradient = ctx.createRadialGradient(canvas.width-(canvas.width*0.1), hgt-(hgt*0.9), 1, canvas.width-(canvas.width*0.1), hgt-(hgt*0.9), 50);
     sunGradient.addColorStop(0, "#FCD440");
     sunGradient.addColorStop(0.75, "#FCD440");
     sunGradient.addColorStop(1, "transparent");
@@ -74,7 +76,7 @@ function GenMountainLandscape(ctx, wth, hgt, sky) {
         let start = -Math.floor(Math.random()*((wth/3)-1)+1);
         let end = wth+Math.floor(Math.random()*((wth/3)-1)+1);
         let cursor = start;
-        let layerFix = Math.round(wth*((plannedLayers-layer)/50))
+        let layerFix = Math.round(wth*((plannedLayers-layer)/50));
 
         let mtColours = [];
 
@@ -94,13 +96,13 @@ function GenMountainLandscape(ctx, wth, hgt, sky) {
             let mtMiddle = Math.round(Math.floor(Math.random()*((mtWidth/2)*2)+1)-(mtWidth/2));
 
             ctx.beginPath();
-            ctx.moveTo(cursor, hgt);
-            ctx.lineTo(cursor, hgt-layerFix);
-            ctx.lineTo(cursor+mtWidth, mtHeight-layerFix);
-            ctx.lineTo(cursor+(mtWidth*2), hgt-layerFix);
-            ctx.lineTo(cursor+(mtWidth*2), hgt);
+            ctx.moveTo(cursor, hgt+fix);
+            ctx.lineTo(cursor, hgt-layerFix+fix);
+            ctx.lineTo(cursor+mtWidth, mtHeight-layerFix+fix);
+            ctx.lineTo(cursor+(mtWidth*2), hgt-layerFix+fix);
+            ctx.lineTo(cursor+(mtWidth*2), hgt+fix);
 
-            let gradientLight = ctx.createLinearGradient(cursor+mtWidth, mtHeight, cursor+mtWidth-mtMiddle, hgt);
+            let gradientLight = ctx.createLinearGradient(cursor+mtWidth, mtHeight+fix, cursor+mtWidth-mtMiddle, hgt+fix);
             gradientLight.addColorStop(0, mtColours[0]);
             gradientLight.addColorStop(0.25, mtColours[1]);
             gradientLight.addColorStop(0.5, mtColours[2]);
@@ -110,13 +112,13 @@ function GenMountainLandscape(ctx, wth, hgt, sky) {
             ctx.fill();
 
             ctx.beginPath();
-            ctx.moveTo(cursor+mtWidth+mtMiddle, hgt);
-            ctx.lineTo(cursor+mtWidth+mtMiddle, hgt-layerFix);
-            ctx.lineTo(cursor+mtWidth, mtHeight-layerFix);
-            ctx.lineTo(cursor+(mtWidth*2), hgt-layerFix);
-            ctx.lineTo(cursor+(mtWidth*2), hgt);
+            ctx.moveTo(cursor+mtWidth+mtMiddle, hgt+fix);
+            ctx.lineTo(cursor+mtWidth+mtMiddle, hgt-layerFix+fix);
+            ctx.lineTo(cursor+mtWidth, mtHeight-layerFix+fix);
+            ctx.lineTo(cursor+(mtWidth*2), hgt-layerFix+fix);
+            ctx.lineTo(cursor+(mtWidth*2), hgt+fix);
 
-            let gradientDark = ctx.createLinearGradient(cursor+mtWidth, mtHeight, cursor+mtWidth-mtMiddle, hgt);
+            let gradientDark = ctx.createLinearGradient(cursor+mtWidth, mtHeight+fix, cursor+mtWidth-mtMiddle, hgt+fix);
             gradientDark.addColorStop(0, ShadeColour(mtColours[0], "#000000", 4));
             gradientDark.addColorStop(0.25, ShadeColour(mtColours[1], "#000000", 4));
             gradientDark.addColorStop(0.5, ShadeColour(mtColours[2], "#000000", 4));
@@ -131,21 +133,21 @@ function GenMountainLandscape(ctx, wth, hgt, sky) {
 
     let groundLevel = hgt-(hgt*0.1);
     
-    let gradientGround = ctx.createLinearGradient(wth, groundLevel, 0, hgt);
+    let gradientGround = ctx.createLinearGradient(wth, groundLevel+fix, 0, hgt+fix);
     gradientGround.addColorStop(0, grassColours[0]);
     gradientGround.addColorStop(1, grassColours[1]);
 
     ctx.fillStyle = gradientGround;
-    ctx.fillRect(0, groundLevel, wth, groundLevel);
+    ctx.fillRect(0, groundLevel+fix, wth, groundLevel+fix);
 
     ctx.beginPath();
-    ctx.moveTo(0, hgt);
-    ctx.lineTo(0, groundLevel+(groundLevel*0.1));
-    ctx.lineTo(wth, groundLevel+(groundLevel*0.09));
-    ctx.lineTo(wth, hgt);
-    ctx.lineTo(0, hgt);
+    ctx.moveTo(0, hgt+fix);
+    ctx.lineTo(0, groundLevel+(groundLevel*0.1)+fix);
+    ctx.lineTo(wth, groundLevel+(groundLevel*0.09)+fix);
+    ctx.lineTo(wth, hgt+fix);
+    ctx.lineTo(0, hgt+fix);
 
-    gradientGround = ctx.createLinearGradient(wth, hgt, wth/4, groundLevel+(groundLevel*0.09));
+    gradientGround = ctx.createLinearGradient(wth, hgt+fix, wth/4, groundLevel+(groundLevel*0.09)+fix);
     gradientGround.addColorStop(0, baseMtColours[1]);
     gradientGround.addColorStop(1, baseMtColours[2]);
 
@@ -156,9 +158,9 @@ function GenMountainLandscape(ctx, wth, hgt, sky) {
     let end = wth+Math.floor(Math.random()*((wth/3)-1)+1);
     let cursor = start;
 
-    let fenceLevel = hgt-(hgt*0.09);
+    let fenceLevel = hgt-(hgt*0.09)+fix;
 
-    let gradientFence = ctx.createLinearGradient(wth, -fenceLevel*0.125, 0, fenceLevel);
+    let gradientFence = ctx.createLinearGradient(wth, (-fenceLevel*0.125)+fix, 0, fenceLevel+fix);
     gradientFence.addColorStop(0, fenceColour);
     gradientFence.addColorStop(1, MixColours(fenceColour, "#000000"));
 
