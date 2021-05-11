@@ -46,13 +46,11 @@
     }
 
     body > div {
-        /*opacity: 0.1; /*temporary*/
-
         position: absolute;
         top: 0;
-        width: 40vw;
-        height: 20vw;
-        margin: 2% 0 0 4%;
+        width: 90vw;
+        height: 45vw;
+        margin: 16% 0 0 4%;
         background: linear-gradient(0deg, #000000 0%, #080808 100%);
         padding: 1%;
         display: flex;
@@ -71,32 +69,34 @@
     }
 
     h1 {
-        font-size: 5em;
+        font-size: 2.5em;
         font-weight: 550;
         width: 100%;
     }
 
     h2 {
-        font-size: 2em;
+        font-size: 1em;
         font-weight: 550;
         width: 100%;
     }
 
     li {
-        font-size: 1.5em;
+        font-size: 0.75em;
     }
 
     li:hover * {
         cursor: pointer;
     }
 
-    p {
-        transition: 0.5s;
-        font-size: 0;
+    @media (hover: hover) {
+        p {
+            transition: 0.5s;
+            font-size: 0;
+        }
     }
 
     a:hover > p {
-        font-size: 1em;
+        font-size: 0.5em;
     }
 
     li, a, i, p {
@@ -123,5 +123,61 @@
         background-clip: text;
         -webkit-background-clip: text;
         animation: 60s neon-shift alternate infinite;
+    }
+
+    @media only screen and (min-width: 447px) {
+        h1 {
+            font-size: 3.75em;
+        }
+
+        h2 {
+            font-size: 1.5em;
+        }
+
+        li {
+            font-size: 1.125em;
+        }
+
+        a:hover > p {
+            font-size: 0.75em;
+        }
+
+        @media only screen and (min-width: 660px) {
+            body > div {
+                width: 60vw;
+                height: 30vw;
+                margin: 2% 0 0 4%;
+            }
+
+            @media only screen and (min-width: 1002px) {
+                body > div {
+                    width: 50vw;
+                    height: 25vw;
+                }
+
+                @media only screen and (min-width: 1210px) {
+                    body > div {
+                        width: 40vw;
+                        height: 20vw;
+                    }
+                
+                    h1 {
+                        font-size: 5em;
+                    }
+                
+                    h2 {
+                        font-size: 2em;
+                    }
+                
+                    li {
+                        font-size: 1.5em;
+                    }
+                
+                    a:hover > p {
+                        font-size: 1em;
+                    }
+                }
+            }
+        }
     }
 }
