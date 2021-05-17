@@ -1,10 +1,23 @@
 window.addEventListener("load", () => {
-    document.getElementById("copy").addEventListener("click", () => {
+    document.getElementById("copydic").addEventListener("click", () => {
         let temp = document.createElement("input");
         temp.className = "temp"
         document.body.appendChild(temp);
 
-        temp.value = document.getElementById("copy").getAttribute("copy");
+        temp.value = document.getElementById("copydic").getAttribute("copy");
+
+        temp.select();
+        document.execCommand("copy");
+
+        document.body.removeChild(temp);
+    });
+
+    document.getElementById("copyeml").addEventListener("click", () => {
+        let temp = document.createElement("input");
+        temp.className = "temp"
+        document.body.appendChild(temp);
+
+        temp.value = document.getElementById("copyeml").getAttribute("copy");
 
         temp.select();
         document.execCommand("copy");
