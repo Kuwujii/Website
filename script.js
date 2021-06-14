@@ -1,29 +1,6 @@
 window.addEventListener("load", () => {
-    document.getElementById("copydic").addEventListener("click", () => {
-        let temp = document.createElement("input");
-        temp.className = "temp"
-        document.body.appendChild(temp);
-
-        temp.value = document.getElementById("copydic").getAttribute("copy");
-
-        temp.select();
-        document.execCommand("copy");
-
-        document.body.removeChild(temp);
-    });
-
-    document.getElementById("copyeml").addEventListener("click", () => {
-        let temp = document.createElement("input");
-        temp.className = "temp"
-        document.body.appendChild(temp);
-
-        temp.value = document.getElementById("copyeml").getAttribute("copy");
-
-        temp.select();
-        document.execCommand("copy");
-
-        document.body.removeChild(temp);
-    });
+    document.getElementById("copydic").addEventListener("click", () => CopyOnClick("copydic")); //Making some links copy to clipbord instead of opening a link
+    document.getElementById("copyeml").addEventListener("click", () => CopyOnClick("copyeml"));
 
     const neonGradients = [
         "linear-gradient(45deg, #5BCEFF 0%, #FFA9B7 25%, #FFFFFF 50%, #FFA9B7 75%, #5BCEFF 100%)",
@@ -32,19 +9,19 @@ window.addEventListener("load", () => {
         "linear-gradient(45deg, #FFFFFF 0%, #FF143C 100%)",
         "linear-gradient(45deg, #8706FF 0%, #FFB5E0 33.33%, #FFFFFF 66.67%, #76FFA4 100%)",
         "linear-gradient(45deg, #FF0000 0%, #FFFF00 16.67%, #00FF00 33.33%, #00FFFF 50%, #0000FF 66.67%, #FF00FF 83.33%, #FF0000 100%)"
-    ];
-    const neonSizes = ["2500%", "2500%", "1000%", "1000%", "2000%", "3500%"];
+    ]; //Text colour shift gradient
+    const neonSizes = ["2500%", "2500%", "1000%", "1000%", "2000%", "3500%"]; //Text colour shift size
 
-    let choice = Math.floor(Math.random()*neonGradients.length);
+    let choice = Math.floor(Math.random()*neonGradients.length); //Get a random one and apply it
     document.documentElement.style.setProperty("--neon", neonGradients[choice]);
     document.documentElement.style.setProperty("--neon-size", neonSizes[choice]);
 
-    const sky = ["#4EA4D9", "#1763A6"] //day
+    const sky = ["#4EA4D9", "#1763A6"] //day //Background colour
     //const sky = ["#032340", "#011526"] //night
 
     document.documentElement.style.setProperty("--sky", "linear-gradient(0deg, "+sky[0]+" 0%, "+sky[1]+" 100%)");
 
-    let canvas = document.getElementById("canvas");
+    let canvas = document.getElementById("canvas"); //Get the canvas and set it's resolution to be client resolution
     canvas.width = document.body.clientWidth;
     canvas.height = document.body.clientHeight;
 
@@ -54,18 +31,31 @@ window.addEventListener("load", () => {
         wth = canvas.width;
         hgt = canvas.height;
         fix = 0;
-    } else {
+    } else { //Fix the variables if device is in portrait orientation
         wth = canvas.height;
         hgt = canvas.width;
         fix = (canvas.width*(canvas.height/canvas.width))-canvas.width;
     }
 
-    if (canvas.getContext) {
+    if (canvas.getContext) { //Draw the background
         let ctx = canvas.getContext('2d');
 
         GenMountainLandscape(ctx, wth, hgt, sky, fix);
     }
 });
+
+function CopyOnClick(name) {
+    let temp = document.createElement("input"); //Create temporary invisible for the user input element
+    temp.className = "temp"
+    document.body.appendChild(temp);
+
+    temp.value = document.getElementById(name).getAttribute("copy"); //Set it's value to what we need to copy
+
+    temp.select(); //Select and copy it's content
+    document.execCommand("copy");
+
+    document.body.removeChild(temp); //Cleanup
+}
 
 function GenMountainLandscape(ctx, wth, hgt, sky, fix) {
     const grassColours = ["#267302", "#155902"];
