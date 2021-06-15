@@ -58,47 +58,47 @@ function CopyOnClick(name) {
 }
 
 function GenMountainLandscape(ctx, wth, hgt, sky, fix) {
-    const grassColours = ["#267302", "#155902"];
+    const grassColours = ["#267302", "#155902"]; //Landscape colour palette
     const fenceColour = "#50290A";
     const baseMtColours = ["#F2F2F2", "#474B56", "#35373E", ShadeColour(grassColours[1], "#000000", 2)];
 
-    ctx.beginPath();
+    ctx.beginPath(); //Draw a sun
     ctx.arc(canvas.width-(canvas.width*0.1), hgt-(hgt*0.9), hgt*0.075, 0, Math.PI*2, true);
 
-    let sunGradient = ctx.createRadialGradient(canvas.width-(canvas.width*0.1), hgt-(hgt*0.9), 1, canvas.width-(canvas.width*0.1), hgt-(hgt*0.9), 50);
+    let sunGradient = ctx.createRadialGradient(canvas.width-(canvas.width*0.1), hgt-(hgt*0.9), 1, canvas.width-(canvas.width*0.1), hgt-(hgt*0.9), 50); //Create sun gradient
     sunGradient.addColorStop(0, "#FCD440");
     sunGradient.addColorStop(0.75, "#FCD440");
     sunGradient.addColorStop(1, "transparent");
     
-    ctx.fillStyle = sunGradient;
+    ctx.fillStyle = sunGradient; //Fill the sun with the gradient
     ctx.fill();
 
-    let plannedLayers = 5;
+    let plannedLayers = 5; //Amount of mountain layers
     
     for(let layer = 0; layer < plannedLayers; layer++) {
-        let start = -Math.floor(Math.random()*((wth/3)-1)+1);
-        let end = wth+Math.floor(Math.random()*((wth/3)-1)+1);
-        let cursor = start;
-        let layerFix = Math.round(wth*((plannedLayers-layer)/50));
+        let start = -Math.floor(Math.random()*((wth/3)-1)+1); //Start of the mountain layer
+        let end = wth+Math.floor(Math.random()*((wth/3)-1)+1); //End of the mountain layer
+        let cursor = start; //Set the cursor to start
+        let layerFix = Math.round(wth*((plannedLayers-layer)/50)); //Height fix for the given layer
 
-        let mtColours = [];
+        let mtColours = []; //Colours of the mountains for the current layer
 
         for(let i = 0; i < baseMtColours.length; i++) {
             mtColours.push(ShadeColour(baseMtColours[i], sky[1], layer+1));
         }
 
-        while(cursor <= end) {
-            let mtWidth = Math.floor(Math.random()*((wth/3)-(wth/4))+(wth/4));
-            let mtHeight = (Math.round(mtWidth/Math.sqrt(3))*2)-layerFix;
+        while(cursor <= end) { //Draw the mountain layer
+            let mtWidth = Math.floor(Math.random()*((wth/3)-(wth/4))+(wth/4)); //Width of the current mountain
+            let mtHeight = (Math.round(mtWidth/Math.sqrt(3))*2)-layerFix; //Height of the current mountain
             
             mtWidth = Math.round(mtWidth/2);
             if(mtWidth == 0) {
                 mtWidth = 1;
             }
 
-            let mtMiddle = Math.round(Math.floor(Math.random()*((mtWidth/2)*2)+1)-(mtWidth/2));
+            let mtMiddle = Math.round(Math.floor(Math.random()*((mtWidth/2)*2)+1)-(mtWidth/2)); //The point of the mountain peak
 
-            ctx.beginPath();
+            ctx.beginPath(); //Draw the light part of the mountain
             ctx.moveTo(cursor, hgt+fix);
             ctx.lineTo(cursor, hgt-layerFix+fix);
             ctx.lineTo(cursor+mtWidth, mtHeight-layerFix+fix);
@@ -114,7 +114,7 @@ function GenMountainLandscape(ctx, wth, hgt, sky, fix) {
             ctx.fillStyle = gradientLight;
             ctx.fill();
 
-            ctx.beginPath();
+            ctx.beginPath(); //Draw the dark part of the mountain
             ctx.moveTo(cursor+mtWidth+mtMiddle, hgt+fix);
             ctx.lineTo(cursor+mtWidth+mtMiddle, hgt-layerFix+fix);
             ctx.lineTo(cursor+mtWidth, mtHeight-layerFix+fix);
@@ -130,13 +130,13 @@ function GenMountainLandscape(ctx, wth, hgt, sky, fix) {
             ctx.fillStyle = gradientDark;
             ctx.fill();
 
-            cursor += mtWidth*2;
+            cursor += mtWidth*2; //Move the cursor
         }
     }
 
     let groundLevel = hgt-(hgt*0.1);
     
-    let gradientGround = ctx.createLinearGradient(wth, groundLevel+fix, 0, hgt+fix);
+    let gradientGround = ctx.createLinearGradient(wth, groundLevel+fix, 0, hgt+fix); //Draw the ground
     gradientGround.addColorStop(0, grassColours[0]);
     gradientGround.addColorStop(1, grassColours[1]);
 
@@ -157,13 +157,13 @@ function GenMountainLandscape(ctx, wth, hgt, sky, fix) {
     ctx.fillStyle = gradientGround;
     ctx.fill();
 
-    let start = -Math.floor(Math.random()*((wth/3)-1)+1);
-    let end = wth+Math.floor(Math.random()*((wth/3)-1)+1);
+    let start = -Math.floor(Math.random()*((wth/3)-1)+1); //Set start of the fence layer
+    let end = wth+Math.floor(Math.random()*((wth/3)-1)+1); //Set end of the fence layer
     let cursor = start;
 
     let fenceLevel = hgt-(hgt*0.09)+fix;
 
-    let gradientFence = ctx.createLinearGradient(wth, (-fenceLevel*0.125)+fix, 0, fenceLevel+fix);
+    let gradientFence = ctx.createLinearGradient(wth, (-fenceLevel*0.125)+fix, 0, fenceLevel+fix); //Draw the fence
     gradientFence.addColorStop(0, fenceColour);
     gradientFence.addColorStop(1, MixColours(fenceColour, "#000000"));
 
@@ -179,17 +179,17 @@ function GenMountainLandscape(ctx, wth, hgt, sky, fix) {
 }
 
 function MixColours(colourHEX1, colourHEX2) {
-    colourHEX1 = colourHEX1.slice(1);
+    colourHEX1 = colourHEX1.slice(1); //Remove the #
     colourHEX2 = colourHEX2.slice(1);
 
-    let colourRGB1 = parseInt(colourHEX1, 16);
+    let colourRGB1 = parseInt(colourHEX1, 16); //Parse to hex
     let colourRGB2 = parseInt(colourHEX2, 16);
 
-    let r = Math.round((((colourRGB1 >> 16) & 0xFF)+((colourRGB2 >> 16) & 0xFF))/2);
+    let r = Math.round((((colourRGB1 >> 16) & 0xFF)+((colourRGB2 >> 16) & 0xFF))/2); //Get the middle point between the two colours
     let g = Math.round((((colourRGB1 >> 8) & 0x00FF)+((colourRGB2 >> 8) & 0x00FF))/2);
     let b = Math.round((((colourRGB1) & 0x0000FF)+((colourRGB2) & 0x0000FF))/2);
 
-    if(r.toString(16).length == 2) {
+    if(r.toString(16).length == 2) { //Parse it to string
         r = r.toString(16)
     } else {
         r = "0"+r.toString(16)
@@ -210,7 +210,7 @@ function MixColours(colourHEX1, colourHEX2) {
     return "#"+r+g+b.toUpperCase();
 }
 
-function ShadeColour(baseColourHEX, shadeColourHEX, mixAmount) {
+function ShadeColour(baseColourHEX, shadeColourHEX, mixAmount) { //A function to mix the colours multiple times
     if(mixAmount == 0) {
         return baseColourHEX;
     }
