@@ -1,4 +1,6 @@
-window.addEventListener("load", () => {
+window.addEventListener("load", () => main());
+
+function main() {
     document.getElementById("copydic").addEventListener("click", () => CopyOnClick("copydic")); //Making some links copy to clipbord instead of opening a link
     document.getElementById("copyeml").addEventListener("click", () => CopyOnClick("copyeml"));
 
@@ -16,10 +18,7 @@ window.addEventListener("load", () => {
     document.documentElement.style.setProperty("--neon", neonGradients[choice]);
     document.documentElement.style.setProperty("--neon-size", neonSizes[choice]);
 
-    const sky = ["#4EA4D9", "#1763A6"] //day //Background colour
-    //const sky = ["#032340", "#011526"] //night
-
-    document.documentElement.style.setProperty("--sky", "linear-gradient(0deg, "+sky[0]+" 0%, "+sky[1]+" 100%)");
+    let now = new Date();
 
     let canvas = document.getElementById("canvas"); //Get the canvas and set it's resolution to be client resolution
     canvas.width = document.body.clientWidth;
@@ -40,9 +39,21 @@ window.addEventListener("load", () => {
     if (canvas.getContext) { //Draw the background
         let ctx = canvas.getContext('2d');
 
+        let sky;
+
+        if(now.getHours() > 5  && now.getHours() < 18) { //Client time of day to website time of day
+            sky = ["#4EA4D9", "#1763A6"];
+            GenSunMoon(ctx, hgt, true);
+        } else {
+            sky = ["#032340", "#011526"];
+            GenSunMoon(ctx, hgt, false);
+        }
+
+        document.documentElement.style.setProperty("--sky", "linear-gradient(0deg, "+sky[0]+" 0%, "+sky[1]+" 100%)");
+
         GenMountainLandscape(ctx, wth, hgt, sky, fix);
     }
-});
+}
 
 function CopyOnClick(name) {
     let temp = document.createElement("input"); //Create temporary invisible for the user input element
@@ -57,21 +68,30 @@ function CopyOnClick(name) {
     document.body.removeChild(temp); //Cleanup
 }
 
-function GenMountainLandscape(ctx, wth, hgt, sky, fix) {
-    const grassColours = ["#267302", "#155902"]; //Landscape colour palette
-    const fenceColour = "#50290A";
-    const baseMtColours = ["#F2F2F2", "#474B56", "#35373E", ShadeColour(grassColours[1], "#000000", 2)];
-
+function GenSunMoon(ctx, hgt, day) {
     ctx.beginPath(); //Draw a sun
     ctx.arc(canvas.width-(canvas.width*0.1), hgt-(hgt*0.9), hgt*0.075, 0, Math.PI*2, true);
 
     let sunGradient = ctx.createRadialGradient(canvas.width-(canvas.width*0.1), hgt-(hgt*0.9), 1, canvas.width-(canvas.width*0.1), hgt-(hgt*0.9), 50); //Create sun gradient
-    sunGradient.addColorStop(0, "#FCD440");
-    sunGradient.addColorStop(0.75, "#FCD440");
+
+    if(day) {
+        sunGradient.addColorStop(0, "#FCD440");
+        sunGradient.addColorStop(0.75, "#FCD440");
+    } else {
+        sunGradient.addColorStop(0, "#DDDDDD");
+        sunGradient.addColorStop(0.75, "#DDDDDD");
+    }
+
     sunGradient.addColorStop(1, "transparent");
     
     ctx.fillStyle = sunGradient; //Fill the sun with the gradient
     ctx.fill();
+}
+
+function GenMountainLandscape(ctx, wth, hgt, sky, fix) {
+    const grassColours = ["#267302", "#155902"]; //Landscape colour palette
+    const fenceColour = "#50290A";
+    const baseMtColours = ["#F2F2F2", "#474B56", "#35373E", ShadeColour(grassColours[1], "#000000", 2)];
 
     let plannedLayers = 5; //Amount of mountain layers
     
