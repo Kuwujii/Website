@@ -2,6 +2,7 @@
     --sky: linear-gradient(0deg, #FFFFFF 0%, #000000 100%);
     --neon: linear-gradient(45deg, #FFFFFF 0%, #000000 100%);
     --neon-size: 1000%;
+    --glow: 0px;
 }
 
 @keyframes neon-shift {
@@ -112,7 +113,7 @@
     }
 
     h1:nth-child(even), h2:nth-child(even), i:nth-child(even), p:nth-child(even)  {
-        filter: blur(20px);
+        filter: blur(var(--glow));
         position: absolute;
     }
 

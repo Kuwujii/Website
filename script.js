@@ -18,8 +18,6 @@ function main() {
     document.documentElement.style.setProperty("--neon", neonGradients[choice]);
     document.documentElement.style.setProperty("--neon-size", neonSizes[choice]);
 
-    let now = new Date();
-
     let canvas = document.getElementById("canvas"); //Get the canvas and set it's resolution to be client resolution
     canvas.width = document.body.clientWidth;
     canvas.height = document.body.clientHeight;
@@ -39,19 +37,7 @@ function main() {
     if (canvas.getContext) { //Draw the background
         let ctx = canvas.getContext('2d');
 
-        let sky;
-
-        if(now.getHours() > 5  && now.getHours() < 18) { //Client time of day to website time of day
-            sky = ["#4EA4D9", "#1763A6"];
-            GenSunMoon(ctx, hgt, true);
-        } else {
-            sky = ["#032340", "#011526"];
-            GenSunMoon(ctx, hgt, false);
-        }
-
-        document.documentElement.style.setProperty("--sky", "linear-gradient(0deg, "+sky[0]+" 0%, "+sky[1]+" 100%)");
-
-        GenMountainLandscape(ctx, wth, hgt, sky, fix);
+        GenLandscape(ctx, wth, hgt, fix);
     }
 }
 
@@ -68,6 +54,27 @@ function CopyOnClick(name) {
     document.body.removeChild(temp); //Cleanup
 }
 
+function GenLandscape(ctx, wth, hgt, fix) {
+    let now = new Date();
+
+    let sky, day;
+
+    if(now.getHours() > 5  && now.getHours() < 18) { //Client time of day to website time of day
+        sky = ["#4EA4D9", "#1763A6"];
+        document.documentElement.style.setProperty("--glow", "10px");
+        day = true;
+    } else {
+        sky = ["#032340", "#011526"];
+        document.documentElement.style.setProperty("--glow", "20px");
+        day = false;
+    }
+
+    document.documentElement.style.setProperty("--sky", "linear-gradient(0deg, "+sky[0]+" 0%, "+sky[1]+" 100%)");
+
+    GenSunMoon(ctx, hgt, day);
+    GenMountainLandscape(ctx, wth, hgt, sky, fix, day);
+}
+
 function GenSunMoon(ctx, hgt, day) {
     ctx.beginPath(); //Draw a sun
     ctx.arc(canvas.width-(canvas.width*0.1), hgt-(hgt*0.9), hgt*0.075, 0, Math.PI*2, true);
@@ -79,7 +86,7 @@ function GenSunMoon(ctx, hgt, day) {
         sunGradient.addColorStop(0.75, "#FCD440");
     } else {
         sunGradient.addColorStop(0, "#DDDDDD");
-        sunGradient.addColorStop(0.75, "#DDDDDD");
+        sunGradient.addColorStop(0.9, "#DDDDDD");
     }
 
     sunGradient.addColorStop(1, "transparent");
@@ -88,10 +95,22 @@ function GenSunMoon(ctx, hgt, day) {
     ctx.fill();
 }
 
-function GenMountainLandscape(ctx, wth, hgt, sky, fix) {
-    const grassColours = ["#267302", "#155902"]; //Landscape colour palette
-    const fenceColour = "#50290A";
-    const baseMtColours = ["#F2F2F2", "#474B56", "#35373E", ShadeColour(grassColours[1], "#000000", 2)];
+function GenMountainLandscape(ctx, wth, hgt, sky, fix, day) {
+    let grassColours = ["#267302", "#155902"]; //Landscape colour palette
+    let fenceColour = "#50290A";
+    let baseMtColours = ["#F2F2F2", "#474B56", "#35373E", ShadeColour(grassColours[1], "#000000", 2)];
+
+    if(!day) {
+        grassColours.forEach((colour, index) => {
+            grassColours[index] = MixColours(colour, sky[1])
+        });
+
+        fenceColour = MixColours(fenceColour, sky[1]);
+
+        baseMtColours.forEach((colour, index) => {
+            baseMtColours[index] = MixColours(colour, sky[1])
+        });
+    }
 
     let plannedLayers = 5; //Amount of mountain layers
     
