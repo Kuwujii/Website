@@ -42,16 +42,20 @@ function main() {
 }
 
 function CopyOnClick(name) {
-    let temp = document.createElement("input"); //Create temporary invisible for the user input element
-    temp.className = "temp"
-    document.body.appendChild(temp);
+    if (!navigator.clipboard) { //Temporarly leaving support for the deprecated way
+        let temp = document.createElement("input"); //Create temporary invisible for the user input element
+        temp.className = "temp"
+        document.body.appendChild(temp);
 
-    temp.value = document.getElementById(name).getAttribute("copy"); //Set it's value to what we need to copy
+        temp.value = document.getElementById(name).getAttribute("copy"); //Set it's value to what we need to copy
 
-    temp.select(); //Select and copy it's content
-    document.execCommand("copy");
+        temp.select(); //Select and copy it's content
+        document.execCommand("copy");
 
-    document.body.removeChild(temp); //Cleanup
+        document.body.removeChild(temp); //Cleanup
+    } else {
+        navigator.clipboard.writeText(document.getElementById(name).getAttribute("copy"));
+    }
 }
 
 function GenLandscape(ctx, wth, hgt, fix) {
