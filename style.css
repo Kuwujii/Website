@@ -59,6 +59,8 @@
         align-content: center;
         border: 10px solid #0f0f0f;
         border-radius: 10px;
+
+        display: none;
     }
 
     nav {

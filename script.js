@@ -1,18 +1,18 @@
 window.addEventListener("load", () => main());
 
+const neonGradients = [
+    "linear-gradient(45deg, #5BCEFF 0%, #FFA9B7 25%, #FFFFFF 50%, #FFA9B7 75%, #5BCEFF 100%)",
+    "linear-gradient(45deg, #FF9BCD 0%, #FF53BE 25%, #8A00FF 50%, #665EFF 75%, #8CA6FF 100%)",
+    "linear-gradient(45deg, #FF4D00 0%, #FF8D00 100%)",
+    "linear-gradient(45deg, #FFFFFF 0%, #FF143C 100%)",
+    "linear-gradient(45deg, #8706FF 0%, #FFB5E0 33.33%, #FFFFFF 66.67%, #76FFA4 100%)",
+    "linear-gradient(45deg, #FF0000 0%, #FFFF00 16.67%, #00FF00 33.33%, #00FFFF 50%, #0000FF 66.67%, #FF00FF 83.33%, #FF0000 100%)"
+]; //Text colour shift gradient
+const neonSizes = ["2500%", "2500%", "1000%", "1000%", "2000%", "3500%"]; //Text colour shift size
+
 function main() {
     document.getElementById("copydic").addEventListener("click", () => CopyOnClick("copydic")); //Making some links copy to clipbord instead of opening a link
     document.getElementById("copyeml").addEventListener("click", () => CopyOnClick("copyeml"));
-
-    const neonGradients = [
-        "linear-gradient(45deg, #5BCEFF 0%, #FFA9B7 25%, #FFFFFF 50%, #FFA9B7 75%, #5BCEFF 100%)",
-        "linear-gradient(45deg, #FF9BCD 0%, #FF53BE 25%, #8A00FF 50%, #665EFF 75%, #8CA6FF 100%)",
-        "linear-gradient(45deg, #FF4D00 0%, #FF8D00 100%)",
-        "linear-gradient(45deg, #FFFFFF 0%, #FF143C 100%)",
-        "linear-gradient(45deg, #8706FF 0%, #FFB5E0 33.33%, #FFFFFF 66.67%, #76FFA4 100%)",
-        "linear-gradient(45deg, #FF0000 0%, #FFFF00 16.67%, #00FF00 33.33%, #00FFFF 50%, #0000FF 66.67%, #FF00FF 83.33%, #FF0000 100%)"
-    ]; //Text colour shift gradient
-    const neonSizes = ["2500%", "2500%", "1000%", "1000%", "2000%", "3500%"]; //Text colour shift size
 
     let choice = Math.floor(Math.random()*neonGradients.length); //Get a random one and apply it
     document.documentElement.style.setProperty("--neon", neonGradients[choice]);
@@ -116,13 +116,13 @@ function GenMountainLandscape(ctx, wth, hgt, sky, fix, day) {
         });
     }
 
-    let plannedLayers = 5; //Amount of mountain layers
+    let plannedLayers = 25; //Amount of mountain layers
     
     for(let layer = 0; layer < plannedLayers; layer++) {
         let start = -Math.floor(Math.random()*((wth/3)-1)+1); //Start of the mountain layer
         let end = wth+Math.floor(Math.random()*((wth/3)-1)+1); //End of the mountain layer
         let cursor = start; //Set the cursor to start
-        let layerFix = Math.round(wth*((plannedLayers-layer)/50)); //Height fix for the given layer
+        let layerFix = Math.round(wth*(((layer+1)/((layer+1)*100)))); //Height fix for the given layer
 
         let mtColours = []; //Colours of the mountains for the current layer
 
@@ -131,8 +131,8 @@ function GenMountainLandscape(ctx, wth, hgt, sky, fix, day) {
         }
 
         while(cursor <= end) { //Draw the mountain layer
-            let mtWidth = Math.floor(Math.random()*((wth/3)-(wth/4))+(wth/4)); //Width of the current mountain
-            let mtHeight = (Math.round(mtWidth/Math.sqrt(3))*2)-layerFix; //Height of the current mountain
+            let mtWidth = Math.floor(Math.random()*((wth/3)-(wth/4))+(wth/4))-(layer+1)/10; //Width of the current mountain
+            let mtHeight = (Math.round(mtWidth/Math.sqrt(3)))-layerFix; //Height of the current mountain
             
             mtWidth = Math.round(mtWidth/2);
             if(mtWidth == 0) {
@@ -177,48 +177,57 @@ function GenMountainLandscape(ctx, wth, hgt, sky, fix, day) {
         }
     }
 
-    let groundLevel = hgt-(hgt*0.1);
+    let groundLevelBase = hgt-(hgt*0.1);
+    let groundLevelL = groundLevelBase/(Math.random()*(1.1-1)+1)
+    let groundLevelR = groundLevelBase/(Math.random()*(1.1-1)+1)
+
+    ctx.beginPath();
+    ctx.moveTo(0, hgt+fix);
+    ctx.lineTo(0, groundLevelL+fix);
+    ctx.lineTo(wth, groundLevelR+fix);
+    ctx.lineTo(wth, hgt+fix);
+    ctx.lineTo(0, hgt+fix);
     
-    let gradientGround = ctx.createLinearGradient(wth, groundLevel+fix, 0, hgt+fix); //Draw the ground
+    let gradientGround = ctx.createLinearGradient(wth, groundLevelBase+fix, 0, hgt+fix); //Draw the ground
     gradientGround.addColorStop(0, grassColours[0]);
     gradientGround.addColorStop(1, grassColours[1]);
 
     ctx.fillStyle = gradientGround;
-    ctx.fillRect(0, groundLevel+fix, wth, groundLevel+fix);
+    ctx.fill();
 
     ctx.beginPath();
     ctx.moveTo(0, hgt+fix);
-    ctx.lineTo(0, groundLevel+(groundLevel*0.1)+fix);
-    ctx.lineTo(wth, groundLevel+(groundLevel*0.09)+fix);
+    ctx.lineTo(0, groundLevelL+(groundLevelL*0.11)+fix);
+    ctx.lineTo(wth, groundLevelR+(groundLevelR*0.11)+fix);
     ctx.lineTo(wth, hgt+fix);
     ctx.lineTo(0, hgt+fix);
 
-    gradientGround = ctx.createLinearGradient(wth, hgt+fix, wth/4, groundLevel+(groundLevel*0.09)+fix);
+    gradientGround = ctx.createLinearGradient(wth, hgt+fix, wth/4, groundLevelBase+(groundLevelBase*0.1)+fix);
     gradientGround.addColorStop(0, baseMtColours[1]);
     gradientGround.addColorStop(1, baseMtColours[2]);
 
     ctx.fillStyle = gradientGround;
     ctx.fill();
 
-    let start = -Math.floor(Math.random()*((wth/3)-1)+1); //Set start of the fence layer
-    let end = wth+Math.floor(Math.random()*((wth/3)-1)+1); //Set end of the fence layer
-    let cursor = start;
+    // let start = -Math.floor(Math.random()*((wth/3)-1)+1); //Set start of the fence layer
+    // let end = wth+Math.floor(Math.random()*((wth/3)-1)+1); //Set end of the fence layer
+    // let cursor = start;
 
-    let fenceLevel = hgt-(hgt*0.09)+fix;
+    // let fenceLevel = hgt-(hgt*0.1)+fix;
 
-    let gradientFence = ctx.createLinearGradient(wth, (-fenceLevel*0.125)+fix, 0, fenceLevel+fix); //Draw the fence
-    gradientFence.addColorStop(0, fenceColour);
-    gradientFence.addColorStop(1, MixColours(fenceColour, "#000000"));
+    // let gradientFence = ctx.createLinearGradient(wth, (-fenceLevel*0.125)+fix, 0, fenceLevel+fix); //Draw the fence
+    // gradientFence.addColorStop(0, fenceColour);
+    // gradientFence.addColorStop(1, MixColours(fenceColour, "#000000"));
 
-    ctx.fillStyle = gradientFence;
+    // ctx.fillStyle = gradientFence;
     
-    while(cursor <= end) {
-        ctx.fillRect(cursor, fenceLevel, wth/100, -fenceLevel*0.125);
-        ctx.fillRect(cursor+(wth/200), fenceLevel-((fenceLevel*0.125)/2), wth/12.5, wth/200);
-        ctx.fillRect(cursor+(wth/200), fenceLevel-((fenceLevel*0.125)*(3/4)), wth/12.5, wth/200);
+    // while(cursor <= end) {
+    //     ctx.fillRect(cursor, fenceLevel, wth/100, -fenceLevel*0.125);
+    //     ctx.fillRect(cursor+(wth/200), fenceLevel-((fenceLevel*0.125)/2), wth/12.5, wth/200);
+    //     ctx.fillRect(cursor+(wth/200), fenceLevel-((fenceLevel*0.125)*(3/4)), wth/12.5, wth/200);
 
-        cursor += wth/12.5;
-    }
+    //     cursor += wth/12.5;
+    // }
 }
 
 function MixColours(colourHEX1, colourHEX2) {
@@ -250,7 +259,7 @@ function MixColours(colourHEX1, colourHEX2) {
         b = "0"+b.toString(16)
     }
 
-    return "#"+r+g+b.toUpperCase();
+    return "#"+(r+g+b).toUpperCase();
 }
 
 function ShadeColour(baseColourHEX, shadeColourHEX, mixAmount) { //A function to mix the colours multiple times
